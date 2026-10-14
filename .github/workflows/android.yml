@@ -1,0 +1,64 @@
+name: Android APK
+# Manual run (Actions → Android APK → Run workflow) or a version tag (v0.1.0).
+# Without signing secrets a DEBUG apk is produced (for testing only).
+# With ANDROID_KEYSTORE_BASE64 / ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD
+# a signed RELEASE apk is produced for direct download.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:native
+      - name: Build APK
+        working-directory: apps/client/android
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          if [ -n "${KEYSTORE_B64}" ]; then
+            echo "${KEYSTORE_B64}" | base64 -d > "${RUNNER_TEMP}/release.jks"
+            {
+              echo "storeFile=${RUNNER_TEMP}/release.jks"
+              echo "storePassword=${KEYSTORE_PASSWORD}"
+              echo "keyAlias=${KEY_ALIAS}"
+              echo "keyPassword=${KEY_PASSWORD}"
+            } > keystore.properties
+            ./gradlew assembleRelease --no-daemon
+            APK=app/build/outputs/apk/release/app-release.apk
+            NAME="amix-${GITHUB_REF_NAME//\//-}-release.apk"
+            rm -f keystore.properties "${RUNNER_TEMP}/release.jks"
+          else
+            ./gradlew assembleDebug --no-daemon
+            APK=app/build/outputs/apk/debug/app-debug.apk
+            NAME="amix-${GITHUB_REF_NAME//\//-}-debug.apk"
+          fi
+          mkdir -p "${GITHUB_WORKSPACE}/out"
+          cp "$APK" "${GITHUB_WORKSPACE}/out/$NAME"
+          (cd "${GITHUB_WORKSPACE}/out" && sha256sum "$NAME" > "$NAME.sha256")
+          cat "${GITHUB_WORKSPACE}/out/$NAME.sha256"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: amix-android
+          path: out/
+          retention-days: 30

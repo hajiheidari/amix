@@ -37,6 +37,9 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
 ## Session 2 (2026-10-14)
 - App id changed to `com.espadna.amix` (Capacitor, Android package/namespace, iOS bundle id). Android debug build re-run: PASS (`com.espadna.amix` 0.1.0). The owner has an Apple Developer membership and will build iOS on their own Mac: see `ios-guide-fa.md`. Privacy policy draft: `privacy-policy.md` (needs a public URL and contact email).
 
+## GitHub Actions
+- Added `ci.yml` (pnpm check on every push), `android.yml` (APK artifact; signed when secrets exist), `ios.yml` (macOS runner: unsigned simulator compile, or archive + TestFlight upload with App Store Connect API key). Owner guide: `github-builds-fa.md`. Run results are recorded below once runs finish.
+
 ## Next concrete steps
 1. Owner: install `app-debug.apk` on an Android phone and run the core workflow in fa/ar; report any issues.
 2. Owner: create the release keystore → `pnpm android:release` → publish the APK + SHA-256 for direct download.

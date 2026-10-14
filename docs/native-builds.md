@@ -32,7 +32,7 @@ Debug APKs are signed with a throwaway debug key: fine for testing, **not** for 
 
 ## iOS — App Store
 
-Step-by-step guide in Persian: [`ios-guide-fa.md`](ios-guide-fa.md).
+Step-by-step guide in Persian: [`ios-guide-fa.md`](ios-guide-fa.md). Without a Mac, use GitHub Actions: [`github-builds-fa.md`](github-builds-fa.md).
 Requires macOS with an Xcode version supported by Capacitor 8, an Apple Developer account (owner decision; paid), and CocoaPods is **not** needed (Capacitor 8 uses Swift Package Manager).
 
 ```bash
