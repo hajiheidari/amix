@@ -20,7 +20,7 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
 | `pnpm test` | PASS — 8 files, 85 tests |
 | `pnpm build` | PASS — 17 precached entries, ~180 KB gzip JS |
 | `pnpm test:e2e` | PASS — 10/10 (5 specs × Pixel 7 + Desktop Chrome; pre-installed Chromium) |
-| `pnpm android:debug` (`./gradlew assembleDebug`) | PASS — `app-debug.apk` 4.3 MB, `com.hajiheidari.amix` 0.1.0, minSdk 24, targetSdk 36, debug-signed. The first attempt failed on a transient proxy disconnect while downloading Maven artifacts; the retry succeeded. |
+| `pnpm android:debug` (`./gradlew assembleDebug`) | PASS — `app-debug.apk` 4.3 MB, `com.espadna.amix` 0.1.0, minSdk 24, targetSdk 36, debug-signed. The first attempt failed on a transient proxy disconnect while downloading Maven artifacts; the retry succeeded. |
 | Android emulator / device run | **BLOCKED** — no KVM/device in this environment |
 | Android signed release APK | **BLOCKED** — needs the owner's keystore (see `native-builds.md`) |
 | iOS build (`xcodebuild`) | **BLOCKED** — requires macOS + Xcode; project generated with `npx cap add ios` only |
@@ -33,6 +33,9 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
 5. Large-market-activity module: documented only, disabled.
 6. Broker CSV presets: none claimed; generic mapping only.
 7. No holiday schedules in sessions (not invented).
+
+## Session 2 (2026-10-14)
+- App id changed to `com.espadna.amix` (Capacitor, Android package/namespace, iOS bundle id). Android debug build re-run: PASS (`com.espadna.amix` 0.1.0). The owner has an Apple Developer membership and will build iOS on their own Mac: see `ios-guide-fa.md`. Privacy policy draft: `privacy-policy.md` (needs a public URL and contact email).
 
 ## Next concrete steps
 1. Owner: install `app-debug.apk` on an Android phone and run the core workflow in fa/ar; report any issues.

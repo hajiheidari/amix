@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.hajiheidari.amix',
+  appId: 'com.espadna.amix',
   appName: 'Amix',
   webDir: 'dist',
   android: { allowMixedContent: false },

@@ -7,10 +7,10 @@ def keystoreProps = new Properties()
 if (keystorePropsFile.exists()) { keystorePropsFile.withInputStream { keystoreProps.load(it) } }
 
 android {
-    namespace = "com.hajiheidari.amix"
+    namespace = "com.espadna.amix"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.hajiheidari.amix"
+        applicationId "com.espadna.amix"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

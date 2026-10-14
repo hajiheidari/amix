@@ -1,4 +1,4 @@
-package com.hajiheidari.amix;
+package com.espadna.amix;
 
 import com.getcapacitor.BridgeActivity;
 

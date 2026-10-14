@@ -2,7 +2,7 @@
 
 Both apps are Capacitor 8 shells around the same web build (`apps/client/dist`). Native builds disable the service worker (`TC_TARGET=native`). Exports use the system share sheet.
 
-App id: `com.hajiheidari.amix` · name: **Amix** · version 0.1.0.
+App id: `com.espadna.amix` · name: **Amix** · version 0.1.0.
 
 ## Android — direct APK download (outside Cafe Bazaar / Play)
 Requirements: JDK 21, Android SDK (platform 36, build-tools 36, platform-tools), `ANDROID_HOME` set. Gradle is downloaded by the wrapper.
@@ -31,6 +31,8 @@ pnpm android:debug        # → apps/client/android/app/build/outputs/apk/debug/
 Debug APKs are signed with a throwaway debug key: fine for testing, **not** for public distribution.
 
 ## iOS — App Store
+
+Step-by-step guide in Persian: [`ios-guide-fa.md`](ios-guide-fa.md).
 Requires macOS with an Xcode version supported by Capacitor 8, an Apple Developer account (owner decision; paid), and CocoaPods is **not** needed (Capacitor 8 uses Swift Package Manager).
 
 ```bash

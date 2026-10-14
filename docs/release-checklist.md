@@ -23,7 +23,7 @@ Owner approval is required for every public step (deployment, store submission, 
 
 ## iOS (App Store)
 - [ ] Apple Developer Program membership (paid, owner decision).
-- [ ] macOS with Xcode compatible with Capacitor 8; `npx cap sync ios`; set the signing team and bundle id `com.hajiheidari.amix`.
+- [ ] macOS with Xcode compatible with Capacitor 8; `npx cap sync ios`; set the signing team and bundle id `com.espadna.amix`.
 - [ ] App icons/splash (source in `apps/client/resources/`), privacy manifest, App Privacy questionnaire ("Data Not Collected").
 - [ ] Review App Store Guideline 3.2.1/5.x considerations for finance apps; the app gives no advice/signals and performs no trading.
 - [ ] TestFlight on real devices: storage persistence after app updates, share-sheet export, RTL.
