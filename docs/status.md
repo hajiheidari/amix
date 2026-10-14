@@ -38,7 +38,7 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
 - App id changed to `com.espadna.amix` (Capacitor, Android package/namespace, iOS bundle id). Android debug build re-run: PASS (`com.espadna.amix` 0.1.0). The owner has an Apple Developer membership and will build iOS on their own Mac: see `ios-guide-fa.md`. Privacy policy draft: `privacy-policy.md` (needs a public URL and contact email).
 
 ## GitHub Actions
-- Added `ci.yml` (pnpm check on every push), `android.yml` (APK artifact; signed when secrets exist), `ios.yml` (macOS runner: unsigned simulator compile, or archive + TestFlight upload with App Store Connect API key). Owner guide: `github-builds-fa.md`. Run results are recorded below once runs finish.
+- Added `ci.yml` (pnpm check on every push), `android.yml` (APK artifact; signed when secrets exist), `ios.yml` (macOS runner: unsigned simulator compile, or archive + TestFlight upload with App Store Connect API key). Owner guide: `github-builds-fa.md`. First runs (2026-10-14, commit 9f6a6aa): CI, Android APK and iOS all ended in ~2 s with **no runner assigned and no logs** (job `runner_id` 0). The jobs never started, which points to an account-level Actions block (billing/spending limit or Actions disabled), not a workflow error. **BLOCKED** until the owner checks the annotation on the run page / Settings → Billing and Actions permissions.
 
 ## Next concrete steps
 1. Owner: install `app-debug.apk` on an Android phone and run the core workflow in fa/ar; report any issues.
