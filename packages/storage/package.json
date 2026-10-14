@@ -1,0 +1,14 @@
+{
+  "name": "@tc/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tc/domain": "workspace:*",
+    "idb": "8.0.4",
+    "@tc/data-contracts": "workspace:*"
+  }
+}

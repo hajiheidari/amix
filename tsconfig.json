@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable",
+      "WebWorker"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": false,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": [
+      "node"
+    ],
+    "paths": {
+      "@tc/domain": [
+        "./packages/domain/src/index.ts"
+      ],
+      "@tc/calculators": [
+        "./packages/calculators/src/index.ts"
+      ],
+      "@tc/sessions": [
+        "./packages/sessions/src/index.ts"
+      ],
+      "@tc/journal": [
+        "./packages/journal/src/index.ts"
+      ],
+      "@tc/storage": [
+        "./packages/storage/src/index.ts"
+      ],
+      "@tc/i18n": [
+        "./packages/i18n/src/index.ts"
+      ],
+      "@tc/ui": [
+        "./packages/ui/src/index.ts"
+      ],
+      "@tc/data-contracts": [
+        "./packages/data-contracts/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "packages/*/src",
+    "packages/*/test",
+    "tests",
+    "*.ts"
+  ]
+}

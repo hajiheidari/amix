@@ -1,0 +1,39 @@
+{
+  "name": "trading-companion",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Amix Trading Companion \u2014 free-first trading preparation and performance review (Web/PWA, Android, iOS).",
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @tc/client dev",
+    "build": "pnpm --filter @tc/client build",
+    "preview": "pnpm --filter @tc/client preview",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/client/tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "i18n:check": "vitest run packages/i18n"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/luxon": "^3.7.6",
+    "@types/node": "^22.20.5",
+    "@types/papaparse": "^5.5.2",
+    "eslint": "10.12.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "fake-indexeddb": "6.2.5",
+    "fast-check": "4.10.2",
+    "globals": "17.13.0",
+    "jsdom": "30.1.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2",
+    "vitest": "5.0.4"
+  }
+}
