@@ -130,7 +130,6 @@ function Shell() {
           </aside>
           <main id="main" ref={mainRef} tabIndex={-1}>
             {!online && <div className="banner">{t('app.offline')}</div>}
-            {store.persisted === false && null}
             {sw.needRefresh && (
               <div className="banner update" role="status">
                 <span>{t('app.updateReady')}</span>

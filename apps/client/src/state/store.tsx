@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { Account, Cashflow, ImportBatch, InstrumentProfile, Settings, Trade } from '@tc/domain';
 import type { CalendarEvent } from '@tc/data-contracts';
-import { IndexedDbRepository, MemoryRepository, StorageError, type Repository, type WriteOp } from '@tc/storage';
+import { IndexedDbRepository, StorageError, type Repository, type WriteOp } from '@tc/storage';
 import { loadSettings, saveSettingsOp, seedIfNeeded } from './services';
 
 export interface Data {
@@ -12,8 +12,6 @@ export interface Data {
   importBatches: ImportBatch[];
   userEvents: CalendarEvent[];
 }
-
-const EMPTY: Data = { accounts: [], cashflows: [], trades: [], profiles: [], importBatches: [], userEvents: [] };
 
 export interface Store {
   repo: Repository;
@@ -44,8 +42,8 @@ function initialLanguage(): Settings['language'] {
 }
 
 async function openRepo(): Promise<Repository> {
-  // IndexedDB is used on the web and inside the Capacitor WebView. Memory is only a last-resort fallback
-  // (e.g. storage blocked) and the UI warns that nothing will persist.
+  // IndexedDB on the web and inside the Capacitor WebView. If it cannot be opened the app
+  // shows an error instead of silently running on non-persistent memory.
   return IndexedDbRepository.open();
 }
 
@@ -106,10 +104,3 @@ export function StoreProvider({ children, fallback, onError }: { children: React
   if (!store) return <>{fallback}</>;
   return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
 }
-
-/** Test helper: provider over an in-memory repository. */
-export function memoryRepo(): Repository {
-  return new MemoryRepository();
-}
-
-export { EMPTY };
