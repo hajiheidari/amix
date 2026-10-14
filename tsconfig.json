@@ -43,7 +43,7 @@
         "./packages/i18n/src/index.ts"
       ],
       "@tc/ui": [
-        "./packages/ui/src/index.ts"
+        "./packages/ui/src/index.tsx"
       ],
       "@tc/data-contracts": [
         "./packages/data-contracts/src/index.ts"

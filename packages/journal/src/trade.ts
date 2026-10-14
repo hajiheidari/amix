@@ -105,6 +105,7 @@ export function computeInitialRisk(t: Pick<Trade, 'fills' | 'initialStop' | 'pro
   const stop = parseDecimal(t.initialStop);
   if (!stop) return null;
   const entries = t.fills.filter((f) => f.side === 'entry');
+  if (entries.some((f) => !parseDecimal(f.quantity) || !parseDecimal(f.price))) return null;
   const q = entries.reduce((s, f) => s.plus(D(f.quantity)), D(0));
   if (!q.gt(0)) return null;
   const avg = entries.reduce((s, f) => s.plus(D(f.quantity).mul(D(f.price))), D(0)).div(q);
@@ -161,7 +162,10 @@ export function validateTrade(t: Trade, account: Account | undefined): Result<Tr
 /** Stable duplicate-detection fingerprint (independent of ids, notes and tags). */
 export function tradeFingerprint(t: Pick<Trade, 'accountId' | 'profile' | 'direction' | 'fills'>): string {
   const fills = sortFills(t.fills)
-    .map((f) => `${f.side[0]}:${D(f.quantity).toFixed()}@${D(f.price).toFixed()}@${new Date(Date.parse(f.at)).toISOString()}`)
+    .map((f) => {
+      const at = Date.parse(f.at);
+      return `${f.side[0]}:${parseDecimal(f.quantity)?.toFixed() ?? f.quantity}@${parseDecimal(f.price)?.toFixed() ?? f.price}@${Number.isNaN(at) ? f.at : new Date(at).toISOString()}`;
+    })
     .join(',');
   return `${t.accountId}|${t.profile.symbol.toUpperCase()}|${t.direction}|${fills}`;
 }

@@ -179,3 +179,16 @@ export const COMMON_ZONES = [
   'Europe/London', 'Europe/Berlin', 'America/New_York', 'America/Chicago', 'America/Los_Angeles', 'America/Toronto',
   'Asia/Tokyo', 'Asia/Singapore', 'Asia/Hong_Kong', 'Australia/Sydney',
 ];
+
+/** ISO instant → value for <input type="datetime-local"> in `zone`. */
+export function isoToZonedInput(iso: string, zone: string): string {
+  const d = DateTime.fromISO(iso, { zone: 'utc' }).setZone(zone);
+  return d.isValid ? d.toFormat("yyyy-MM-dd'T'HH:mm") : '';
+}
+
+/** <input type="datetime-local"> value interpreted in `zone` → ISO instant (UTC), or null. */
+export function zonedInputToIso(value: string, zone: string): string | null {
+  if (!value) return null;
+  const d = DateTime.fromISO(value, { zone });
+  return d.isValid ? d.toUTC().toISO() : null;
+}

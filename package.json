@@ -18,7 +18,10 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
-    "i18n:check": "vitest run packages/i18n"
+    "i18n:check": "vitest run packages/i18n",
+    "build:native": "pnpm --filter @tc/client build:native",
+    "android:debug": "pnpm --filter @tc/client android:debug",
+    "android:release": "pnpm --filter @tc/client android:release"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

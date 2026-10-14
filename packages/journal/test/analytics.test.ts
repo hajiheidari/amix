@@ -90,3 +90,14 @@ describe('edge cases', () => {
     expect(fx(s.net)).toBe('18'); // 0.0020 × 0.1 × 100000 − 2
   });
 });
+
+import { computeInitialRisk, tradeFingerprint, validateTrade } from '../src';
+describe('incomplete input never throws', () => {
+  it('handles empty fill values', () => {
+    const t = { ...trades[0]!, fills: [...trades[0]!.fills, { id: 'x', side: 'exit' as const, quantity: '', price: '', at: '' }] };
+    expect(() => tradeFingerprint(t)).not.toThrow();
+    expect(computeInitialRisk({ ...t, fills: [{ id: 'y', side: 'entry', quantity: '', price: '1', at: '' }] })).toBeNull();
+    const v = validateTrade(t, accountUSD);
+    expect(v.ok).toBe(false);
+  });
+});

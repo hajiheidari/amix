@@ -16,6 +16,16 @@ export interface CalendarFilter {
   showSample: boolean;
 }
 
+/** User-defined trading window (structurally compatible with @tc/sessions SessionDef). */
+export interface UserWindow {
+  id: string;
+  name: string;
+  zone: string;
+  days: number[];
+  open: string;
+  close: string;
+}
+
 export interface Settings {
   language: Language;
   numerals: NumeralSystem | 'auto';
@@ -27,6 +37,7 @@ export interface Settings {
   riskPreset: { mode: 'percent' | 'cash'; value: string };
   favoriteProfileIds: string[];
   selectedSessionSet: 'fx' | 'exchange' | 'all';
+  userWindows: UserWindow[];
   widgets: WidgetPref[];
   calendar: CalendarFilter;
   lastBackupAt: string | null;
@@ -43,6 +54,7 @@ export const DEFAULT_SETTINGS: Settings = {
   riskPreset: { mode: 'percent', value: '1' },
   favoriteProfileIds: [],
   selectedSessionSet: 'fx',
+  userWindows: [],
   widgets: ALL_WIDGETS.map((id) => ({ id, visible: true })),
   calendar: { currencies: [], minImportance: 'all', showSample: false },
   lastBackupAt: null,

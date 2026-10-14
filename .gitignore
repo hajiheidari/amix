@@ -17,3 +17,4 @@ apps/client/android/local.properties
 apps/client/ios/App/Pods/
 apps/client/ios/App/build/
 apps/client/ios/DerivedData/
+keystore.properties

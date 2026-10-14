@@ -92,6 +92,9 @@ importers:
       '@tc/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      luxon:
+        specifier: 3.7.2
+        version: 3.7.2
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -167,6 +170,9 @@ importers:
 
   packages/storage:
     dependencies:
+      '@tc/data-contracts':
+        specifier: workspace:*
+        version: link:../data-contracts
       '@tc/domain':
         specifier: workspace:*
         version: link:../domain
@@ -176,9 +182,19 @@ importers:
 
   packages/ui:
     dependencies:
+      '@tc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@tc/i18n':
         specifier: workspace:*
         version: link:../i18n
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
 
 packages:
 

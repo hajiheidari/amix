@@ -75,3 +75,13 @@ describe('status and weekends', () => {
     expect((r.end - r.start) / 3_600_000).toBe(23);
   });
 });
+
+import { isoToZonedInput, zonedInputToIso } from '../src';
+describe('zoned input conversion', () => {
+  it('round-trips local wall time in Tehran and New York', () => {
+    expect(zonedInputToIso('2026-03-18T10:00', 'Asia/Tehran')).toBe('2026-03-18T06:30:00.000Z');
+    expect(isoToZonedInput('2026-03-18T06:30:00.000Z', 'Asia/Tehran')).toBe('2026-03-18T10:00');
+    expect(zonedInputToIso('2026-07-01T09:30', 'America/New_York')).toBe('2026-07-01T13:30:00.000Z');
+    expect(zonedInputToIso('', 'UTC')).toBeNull();
+  });
+});

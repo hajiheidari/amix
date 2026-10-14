@@ -9,7 +9,10 @@
     "preview": "vite preview --port 4173 --strictPort",
     "cap:sync": "cap sync",
     "cap:android": "cap sync android && cap open android",
-    "cap:ios": "cap sync ios && cap open ios"
+    "cap:ios": "cap sync ios && cap open ios",
+    "build:native": "TC_TARGET=native vite build && cap sync",
+    "android:debug": "pnpm build:native && cd android && ./gradlew assembleDebug",
+    "android:release": "pnpm build:native && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",
@@ -25,6 +28,7 @@
     "@tc/sessions": "workspace:*",
     "@tc/storage": "workspace:*",
     "@tc/ui": "workspace:*",
+    "luxon": "3.7.2",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
