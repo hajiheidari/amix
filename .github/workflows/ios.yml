@@ -72,7 +72,11 @@ jobs:
             -destination 'generic/platform=iOS' -archivePath "${RUNNER_TEMP}/Amix.xcarchive" \
             DEVELOPMENT_TEAM="$TEAM_ID" CODE_SIGN_STYLE=Automatic \
             MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
-            "${AUTH[@]}" archive | tail -n 40
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            archive | tail -n 40
+          # The archive is unsigned (a development profile would need registered devices).
+          # -exportArchive signs it with an App Store distribution certificate/profile that
+          # Apple creates on demand through the API key (cloud-managed signing).
           cat > "${RUNNER_TEMP}/ExportOptions.plist" <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
