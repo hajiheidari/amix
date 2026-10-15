@@ -8,6 +8,7 @@ import { saveProfile } from '../state/services';
 import { useAppUi } from '../components/AppContext';
 import { Icon } from '../components/icons';
 import { sortedProfiles } from '../components/forms';
+import { ImportMt } from './ImportMt';
 
 function blank(): InstrumentProfile {
   const t = nowIso();
@@ -21,6 +22,7 @@ function blank(): InstrumentProfile {
 export function Instruments({ editId }: { editId?: string }) {
   const i = useI18n();
   const { data, settings, updateSettings } = useStore();
+  if (editId === 'import-mt') return <ImportMt />;
   if (editId) return <ProfileEditor id={editId} />;
   const list = sortedProfiles(data.profiles, settings.favoriteProfileIds);
   const toggleFav = (id: string) => updateSettings({ favoriteProfileIds: settings.favoriteProfileIds.includes(id) ? settings.favoriteProfileIds.filter((x) => x !== id) : [...settings.favoriteProfileIds, id] });
@@ -28,9 +30,14 @@ export function Instruments({ editId }: { editId?: string }) {
     <div className="page">
       <div className="page-head">
         <h1>{i.t('inst.title')}</h1>
-        <a className="btn primary" href={href('instruments/new')}>
-          {i.t('inst.add')}
-        </a>
+        <div className="row wrap">
+          <a className="btn primary" href={href('instruments/import-mt')}>
+            {i.t('inst.importMt')}
+          </a>
+          <a className="btn" href={href('instruments/new')}>
+            {i.t('inst.add')}
+          </a>
+        </div>
       </div>
       <p className="muted">{i.t('inst.help')}</p>
       {list.length === 0 && <EmptyState>{i.t('inst.add')}</EmptyState>}

@@ -39,7 +39,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,mq4,mq5}'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         // No runtime caching of third-party data: the app works from local storage only.

@@ -3,8 +3,8 @@ import { isCurrencyCode } from './ids';
 import { err, fail, ok, type FieldError, type Result } from './result';
 
 /** Only linear instruments are supported. Inverse, options and other nonlinear products are disabled. */
-export type AssetClass = 'fx' | 'metal_cfd' | 'index_cfd' | 'share' | 'future' | 'crypto_spot';
-export const ASSET_CLASSES: AssetClass[] = ['fx', 'metal_cfd', 'index_cfd', 'share', 'future', 'crypto_spot'];
+export type AssetClass = 'fx' | 'metal_cfd' | 'index_cfd' | 'cfd' | 'share' | 'future' | 'crypto_spot';
+export const ASSET_CLASSES: AssetClass[] = ['fx', 'metal_cfd', 'index_cfd', 'cfd', 'share', 'future', 'crypto_spot'];
 
 /** Contract types we recognise. Anything but 'linear' is rejected by validation. */
 export type ContractType = 'linear' | 'inverse' | 'option' | 'other_nonlinear';
@@ -106,6 +106,7 @@ export function defaultUnitFor(assetClass: AssetClass): QuantityUnit {
     case 'fx':
     case 'metal_cfd':
     case 'index_cfd':
+    case 'cfd':
       return 'lot';
     case 'future':
       return 'contract';

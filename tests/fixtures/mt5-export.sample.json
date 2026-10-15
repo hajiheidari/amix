@@ -1,0 +1,18 @@
+{
+  "format": "amix-mt-symbols",
+  "version": 1,
+  "platform": "MT5",
+  "exportedAt": "2026-10-15T08:00:00Z",
+  "_note": "SAMPLE fixture for tests only. Values are illustrative, not from a real broker.",
+  "account": { "company": "Sample Broker Ltd", "server": "Sample-Demo", "currency": "USD", "leverage": 100 },
+  "symbols": [
+    { "name": "EURUSD.m", "description": "Euro vs US Dollar", "path": "Forex\\Majors\\EURUSD.m", "digits": 5, "point": 0.00001, "contractSize": 100000, "tickSize": 0.00001, "tickValue": 1, "volumeMin": 0.01, "volumeMax": 100, "volumeStep": 0.01, "baseCurrency": "EUR", "profitCurrency": "USD", "marginCurrency": "EUR", "calcMode": "SYMBOL_CALC_MODE_FOREX", "marginInitial": 0, "marginRate": 1, "tradeAllowed": true },
+    { "name": "USDJPY.m", "description": "US Dollar vs Yen", "path": "Forex\\Majors\\USDJPY.m", "digits": 3, "point": 0.001, "contractSize": 100000, "tickSize": 0.001, "tickValue": 0.6667, "volumeMin": 0.01, "volumeMax": 100, "volumeStep": 0.01, "baseCurrency": "USD", "profitCurrency": "JPY", "marginCurrency": "USD", "calcMode": "SYMBOL_CALC_MODE_FOREX", "marginInitial": 0, "marginRate": 1, "tradeAllowed": true },
+    { "name": "XAUUSD.m", "description": "Gold vs US Dollar", "path": "Metals\\XAUUSD.m", "digits": 2, "point": 0.01, "contractSize": 100, "tickSize": 0.01, "tickValue": 1, "volumeMin": 0.01, "volumeMax": 50, "volumeStep": 0.01, "baseCurrency": "XAU", "profitCurrency": "USD", "marginCurrency": "USD", "calcMode": "SYMBOL_CALC_MODE_CFDLEVERAGE", "marginInitial": 0, "marginRate": 1, "tradeAllowed": true },
+    { "name": "NAS100", "description": "US Tech 100 Index", "path": "Indices\\NAS100", "digits": 2, "point": 0.01, "contractSize": 1, "tickSize": 0.01, "tickValue": 0.01, "volumeMin": 0.1, "volumeMax": 500, "volumeStep": 0.1, "baseCurrency": "USD", "profitCurrency": "USD", "marginCurrency": "USD", "calcMode": "SYMBOL_CALC_MODE_CFD", "marginInitial": 0, "marginRate": 0.05, "tradeAllowed": true },
+    { "name": "DAX40", "description": "Germany 40", "path": "Indices\\DAX40", "digits": 1, "point": 0.1, "contractSize": 1, "tickSize": 0.1, "tickValue": 0.1167, "volumeMin": 0.1, "volumeMax": 100, "volumeStep": 0.1, "baseCurrency": "EUR", "profitCurrency": "EUR", "marginCurrency": "EUR", "calcMode": "SYMBOL_CALC_MODE_CFDINDEX", "marginInitial": 0, "marginRate": 1, "tradeAllowed": true },
+    { "name": "ESZ6", "description": "E-mini S&P 500 Dec 2026", "path": "Futures\\ESZ6", "digits": 2, "point": 0.01, "contractSize": 50, "tickSize": 0.25, "tickValue": 12.5, "volumeMin": 1, "volumeMax": 50, "volumeStep": 1, "baseCurrency": "USD", "profitCurrency": "USD", "marginCurrency": "USD", "calcMode": "SYMBOL_CALC_MODE_EXCH_FUTURES", "marginInitial": 15000, "marginRate": 1, "tradeAllowed": true },
+    { "name": "AAPL", "description": "Apple Inc", "path": "Stocks\\US\\AAPL", "digits": 2, "point": 0.01, "contractSize": 1, "tickSize": 0.01, "tickValue": 0.01, "volumeMin": 1, "volumeMax": 10000, "volumeStep": 1, "baseCurrency": "USD", "profitCurrency": "USD", "marginCurrency": "USD", "calcMode": "SYMBOL_CALC_MODE_EXCH_STOCKS", "marginInitial": 0, "marginRate": 1, "tradeAllowed": false },
+    { "name": "BOND1", "description": "Bond", "path": "Bonds\\BOND1", "digits": 2, "point": 0.01, "contractSize": 1, "tickSize": 0.01, "tickValue": 0.01, "volumeMin": 1, "volumeMax": 100, "volumeStep": 1, "baseCurrency": "USD", "profitCurrency": "USD", "marginCurrency": "USD", "calcMode": "SYMBOL_CALC_MODE_EXCH_BONDS", "marginInitial": 0, "marginRate": 1, "tradeAllowed": true }
+  ]
+}

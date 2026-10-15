@@ -49,6 +49,12 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
   - Owner registered the bundle id and created the App Store Connect app. Run 38661553178: **PASS**. `ARCHIVE SUCCEEDED`, `EXPORT SUCCEEDED`, "Upload succeeded": **version 0.1.0 build 7 uploaded to App Store Connect** (TestFlight processing then happens on Apple's side). Device testing via TestFlight is pending the owner.
   - Note: the repository is now public, so the source is visible to anyone. No secrets are committed (scanned). There is no LICENSE file, so the default is "all rights reserved"; this is the owner's decision.
 
+## MetaTrader instrument import (2026-10-15)
+- Added `AmixExport.mq5` / `.mq4` (read-only export scripts, bundled with the app and offline-cached), the importer/mapper with preview and transactional versioned import, a new "Other CFD (linear)" asset class, and 35 new i18n keys × 3 languages.
+- Tests: `pnpm test` 94 passed (9 MetaTrader mapping tests, including golden cases reproduced from imported profiles); `pnpm test:e2e` 12/12 passed (new Persian MetaTrader import → sizing flow, with an overflow check at 412 px).
+- **BLOCKED / not verified:** the MQL scripts have not been compiled or run (no MetaTrader/MetaEditor here). The owner should run them on Windows MT5/MT4 and send the resulting JSON (or any error) for verification.
+- TradingView rejected as a source (no licensed API; chart metadata ≠ broker specs).
+
 ## Next concrete steps
 1. Owner: install `app-debug.apk` on an Android phone and run the core workflow in fa/ar; report any issues.
 2. Owner: create the release keystore → `pnpm android:release` → publish the APK + SHA-256 for direct download.

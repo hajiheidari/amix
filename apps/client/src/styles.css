@@ -263,3 +263,11 @@ input[type='range'] { inline-size: 100%; accent-color: var(--brand); }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
 @media print { .bottom-nav, .sidebar, .toasts { display: none; } }
+
+/* MetaTrader import */
+.steps { padding-inline-start: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; margin-block: 0 0.75rem; }
+.mt-list { max-block-size: 60vh; overflow: auto; }
+.warn-text { color: var(--warn-ink); }
+.wrap-anywhere { overflow-wrap: anywhere; }
+.mt-list .num { white-space: normal; }
+.mt-list .grow { overflow-wrap: anywhere; }
