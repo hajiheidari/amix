@@ -54,6 +54,7 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
 - Tests: `pnpm test` 94 passed (9 MetaTrader mapping tests, including golden cases reproduced from imported profiles); `pnpm test:e2e` 12/12 passed (new Persian MetaTrader import → sizing flow, with an overflow check at 412 px).
 - **BLOCKED / not verified:** the MQL scripts have not been compiled or run (no MetaTrader/MetaEditor here). The owner should run them on Windows MT5/MT4 and send the resulting JSON (or any error) for verification.
 - TradingView rejected as a source (no licensed API; chart metadata ≠ broker specs).
+- Builds with this feature (commit 8771334): iOS run 38778228409 **uploaded 0.1.0 build 8** to App Store Connect (`Upload succeeded`); Android run 38778232482 PASS (artifact `amix-android`).
 
 ## Next concrete steps
 1. Owner: install `app-debug.apk` on an Android phone and run the core workflow in fa/ar; report any issues.
