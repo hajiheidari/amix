@@ -52,7 +52,20 @@ jobs:
             if [ -z "${!v}" ]; then echo "::error::Missing secret for $v (see docs/github-builds-fa.md)"; exit 1; fi
           done
           KEY="${RUNNER_TEMP}/AuthKey_${ASC_KEY_ID}.p8"
-          printf '%s\n' "${ASC_KEY_P8}" > "$KEY"
+          # Normalize the pasted key (Windows CRLF, BOM, spaces, missing header lines, or a
+          # base64-encoded copy of the whole file) into a clean PEM. Never printed.
+          RAW=$(printf '%s' "${ASC_KEY_P8}" | tr -d '\r' | sed $'s/^\xEF\xBB\xBF//')
+          if ! grep -q "BEGIN PRIVATE KEY" <<<"$RAW"; then
+            DEC=$(printf '%s' "$RAW" | tr -d ' \n\t' | base64 -D 2>/dev/null || true)
+            if grep -q "BEGIN PRIVATE KEY" <<<"$DEC"; then RAW="$DEC"; fi
+          fi
+          BODY=$(printf '%s' "$RAW" | sed -e 's/-----BEGIN PRIVATE KEY-----//' -e 's/-----END PRIVATE KEY-----//' | tr -dc 'A-Za-z0-9+/=')
+          { echo "-----BEGIN PRIVATE KEY-----"; printf '%s\n' "$BODY" | fold -w 64; echo "-----END PRIVATE KEY-----"; } > "$KEY"
+          if ! openssl pkey -in "$KEY" -noout 2>/dev/null; then
+            rm -f "$KEY"
+            echo "::error::ASC_KEY_P8 is not a valid App Store Connect .p8 key (body length ${#BODY}). Paste the full text of AuthKey_XXXX.p8 again."
+            exit 1
+          fi
           VERSION=$(node -p "require('./package.json').version")
           AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
           xcodebuild -project apps/client/ios/App/App.xcodeproj -scheme App -configuration Release \
