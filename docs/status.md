@@ -42,7 +42,7 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
   - CI run 38655484328 (attempt 2): **PASS** (`pnpm check` on ubuntu-latest).
   - Android APK run 38656709110: **PASS**, artifact `amix-android` (debug APK + SHA-256), expires 2026-11-13.
   - iOS run 38656711585 (upload=false): **PASS**, `** BUILD SUCCEEDED **` with Xcode 26.6 / iPhoneSimulator 26.5 SDK, bundle `com.espadna.amix`.
-  - iOS signed archive + TestFlight upload: **not run yet**. Needs the owner's secrets (APPLE_TEAM_ID, ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8).
+  - iOS signed archive + TestFlight upload, run 38657740696 (2026-10-15): **FAILED before build**. All four secrets were empty inside the job, so they are not repository-level Actions secrets with these exact names. Waiting on the owner to fix secret placement or naming.
   - Note: the repository is now public, so the source is visible to anyone. No secrets are committed (scanned). There is no LICENSE file, so the default is "all rights reserved"; this is the owner's decision.
 
 ## Next concrete steps
