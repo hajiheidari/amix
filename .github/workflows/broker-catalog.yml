@@ -1,0 +1,57 @@
+name: Broker catalog
+# Weekly: logs into the configured MT5 DEMO accounts (secret MT_ACCOUNTS), exports contract
+# specifications and publishes them to the `catalog-data` branch, which the app reads.
+# Without the secret it only checks that MetaTrader 5 can run on the runner.
+on:
+  schedule:
+    - cron: '17 3 * * 1' # Mondays 03:17 UTC
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: broker-catalog
+  cancel-in-progress: false
+jobs:
+  export:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    env:
+      HAS_ACCOUNTS: ${{ secrets.MT_ACCOUNTS != '' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r tools/mt-catalog/requirements.txt
+      - name: Install MetaTrader 5 terminal
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Invoke-WebRequest -Uri 'https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe' -OutFile "$env:RUNNER_TEMP\mt5setup.exe"
+          Start-Process -FilePath "$env:RUNNER_TEMP\mt5setup.exe" -ArgumentList '/auto' -Wait
+          $exe = 'C:\Program Files\MetaTrader 5\terminal64.exe'
+          for ($i = 0; $i -lt 60 -and -not (Test-Path $exe); $i++) { Start-Sleep -Seconds 5 }
+          if (-not (Test-Path $exe)) { throw 'terminal64.exe not found after install' }
+          Get-Process terminal64 -ErrorAction SilentlyContinue | Stop-Process -Force
+          Write-Host "Installed: $exe"
+      - name: Check out catalog-data branch
+        shell: bash
+        run: |
+          git fetch origin catalog-data:catalog-data 2>/dev/null && git worktree add catalog-data catalog-data || {
+            git worktree add --detach catalog-data && cd catalog-data && git checkout --orphan catalog-data && git rm -rf . >/dev/null 2>&1 || true; }
+      - name: Export symbol specifications
+        env:
+          MT_ACCOUNTS: ${{ secrets.MT_ACCOUNTS }}
+          CATALOG_DIR: catalog-data/catalog
+        run: python tools/mt-catalog/export.py
+      - name: Publish to catalog-data branch
+        if: ${{ env.HAS_ACCOUNTS == 'true' }}
+        shell: bash
+        working-directory: catalog-data
+        run: |
+          git config user.name "amix-catalog-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add catalog
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Update broker catalog $(date -u +%Y-%m-%d)"
+          git push origin catalog-data
