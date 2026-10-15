@@ -42,6 +42,8 @@ export interface Settings {
   calendar: CalendarFilter;
   lastBackupAt: string | null;
   disclaimerAccepted: boolean;
+  /** Broker catalog the user follows for weekly instrument updates. */
+  brokerCatalog: { entryId: string | null; exportedAt: string | null; lastCheckedAt: string | null };
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -59,6 +61,7 @@ export const DEFAULT_SETTINGS: Settings = {
   calendar: { currencies: [], minImportance: 'all', showSample: false },
   lastBackupAt: null,
   disclaimerAccepted: false,
+  brokerCatalog: { entryId: null, exportedAt: null, lastCheckedAt: null },
 };
 
 export function moveWidget(widgets: WidgetPref[], id: WidgetId, delta: -1 | 1): WidgetPref[] {
@@ -76,5 +79,5 @@ export function mergeSettings(stored: Partial<Settings> | null | undefined): Set
   const known = new Set(s.widgets.map((w) => w.id));
   const widgets = s.widgets.filter((w) => (DEFAULT_SETTINGS.widgets.some((d) => d.id === w.id)));
   for (const d of DEFAULT_SETTINGS.widgets) if (!known.has(d.id)) widgets.push(d);
-  return { ...s, widgets, calendar: { ...DEFAULT_SETTINGS.calendar, ...(stored?.calendar ?? {}) }, riskPreset: { ...DEFAULT_SETTINGS.riskPreset, ...(stored?.riskPreset ?? {}) } };
+  return { ...s, widgets, calendar: { ...DEFAULT_SETTINGS.calendar, ...(stored?.calendar ?? {}) }, riskPreset: { ...DEFAULT_SETTINGS.riskPreset, ...(stored?.riskPreset ?? {}) }, brokerCatalog: { ...DEFAULT_SETTINGS.brokerCatalog, ...(stored?.brokerCatalog ?? {}) } };
 }

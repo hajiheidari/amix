@@ -13,13 +13,16 @@ that the terminal can be started (feasibility check).
 """
 import datetime as dt
 import json
+import multiprocessing as mp
 import os
+import subprocess
 import sys
 import time
 
 import MetaTrader5 as mt5
 
 TERMINAL = os.environ.get("MT5_PATH", r"C:\Program Files\MetaTrader 5\terminal64.exe")
+ACCOUNT_TIMEOUT_S = int(os.environ.get("ACCOUNT_TIMEOUT_S", "420"))
 OUT = os.environ.get("CATALOG_DIR", "catalog")
 CALC_NAMES = {getattr(mt5, n): n for n in dir(mt5) if n.startswith("SYMBOL_CALC_MODE_")}
 
@@ -106,18 +109,56 @@ def export_account(acc) -> dict:
     }
 
 
+def _worker(acc, q):
+    """Runs in a child process so a hung terminal can be killed."""
+    try:
+        if not init(acc):
+            q.put({"error": f"login failed: {mt5.last_error()[0]}"})
+            return
+        data = export_account(acc)
+        mt5.shutdown()
+        q.put({"data": data})
+    except Exception as e:  # noqa: BLE001
+        q.put({"error": f"{type(e).__name__}"})
+
+
+def kill_terminals():
+    subprocess.run(["taskkill", "/F", "/IM", "terminal64.exe"], capture_output=True)
+
+
+def run_account(acc):
+    q = mp.Queue()
+    p = mp.Process(target=_worker, args=(acc, q))
+    p.start()
+    p.join(ACCOUNT_TIMEOUT_S)
+    if p.is_alive():
+        p.kill()
+        kill_terminals()
+        return None, f"timed out after {ACCOUNT_TIMEOUT_S}s"
+    kill_terminals()
+    try:
+        r = q.get_nowait()
+    except Exception:  # noqa: BLE001
+        return None, "no result"
+    return r.get("data"), r.get("error")
+
+
+def probe() -> int:
+    """Without accounts: check that the installed terminal starts and stays up."""
+    proc = subprocess.Popen([TERMINAL, "/portable"])
+    time.sleep(25)
+    alive = proc.poll() is None
+    kill_terminals()
+    print(f"PROBE {'OK' if alive else 'FAILED'}: terminal process {'started and stayed up' if alive else 'exited'}; "
+          f"python package {mt5.__version__}. Login/export needs MT_ACCOUNTS.")
+    return 0 if alive else 1
+
+
 def main() -> int:
     raw = os.environ.get("MT_ACCOUNTS", "").strip()
     if not raw:
         print("MT_ACCOUNTS not set: probe mode")
-        ok = init()
-        if ok:
-            ti = mt5.terminal_info()
-            print(f"PROBE OK: terminal build {ti.build if ti else '?'}, connected={ti.connected if ti else '?'}; python package {mt5.__version__}")
-            mt5.shutdown()
-            return 0
-        print("PROBE FAILED: terminal could not be started")
-        return 1
+        return probe()
     try:
         accounts = json.loads(raw)
     except json.JSONDecodeError:
@@ -141,11 +182,11 @@ def main() -> int:
                 break
         else:
             print(f"exporting {acc['id']} ({acc['broker']} {acc.get('accountType', '')}, {acc['server']})")
-            if not init(acc):
+            data, error = run_account(acc)
+            if error or not data:
+                print(f"  {acc['id']}: FAILED ({error})")
                 failures += 1
                 continue
-            data = export_account(acc)
-            mt5.shutdown()
             if not data["symbols"]:
                 print(f"  {acc['id']}: no symbols, not written")
                 failures += 1
@@ -165,4 +206,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    mp.freeze_support()
     sys.exit(main())

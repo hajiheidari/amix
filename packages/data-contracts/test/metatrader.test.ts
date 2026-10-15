@@ -93,3 +93,17 @@ describe('margin rate not reported', () => {
     expect(m.warnings).toContain('mt.warn.marginRateUnknown');
   });
 });
+
+describe('terminal-measured margin (catalog exports)', () => {
+  it('prefers measured margin per lot over mode inference', () => {
+    const base = exp.symbols.find((x) => x.name === 'NAS100')!;
+    // notional 20000 USD per lot, measured margin 1000 USD → effective 1:20
+    const m = mapExport({ ...exp, symbols: [{ ...base, marginRate: 0, marginPerLotAccount: 1000, notionalPerLotAccount: 20000 }] }, [])[0]!;
+    expect(m.profile!.margin).toEqual({ kind: 'leverage', leverage: '20' });
+    const r = calculateMargin({ profile: m.profile!, quantity: '2', price: '20000', accountCurrency: 'USD' });
+    expect(r.ok && r.value.status === 'estimated' && r.value.margin.toFixed()).toBe('2000');
+    const es = exp.symbols.find((x) => x.name === 'ESZ6')!;
+    const f = mapExport({ ...exp, symbols: [{ ...es, marginPerLotAccount: 12650, notionalPerLotAccount: 300000 }] }, [])[0]!;
+    expect(f.profile!.margin).toEqual({ kind: 'fixed_per_quantity', amount: '12650', currency: 'USD' });
+  });
+});

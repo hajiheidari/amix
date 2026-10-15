@@ -15,6 +15,7 @@ import { Analytics } from './screens/Analytics';
 import { CalendarScreen } from './screens/Calendar';
 import { SettingsScreen } from './screens/Settings';
 import { useServiceWorker } from './state/pwa';
+import { useCatalogUpdate } from './state/catalogUpdates';
 
 const NAV: { id: string; icon: IconName; key: string; primary: boolean }[] = [
   { id: 'dashboard', icon: 'dashboard', key: 'nav.dashboard', primary: true },
@@ -40,6 +41,7 @@ function Shell() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [online, setOnline] = useState(typeof navigator === 'undefined' ? true : navigator.onLine);
   const sw = useServiceWorker();
+  const catalogUpdate = useCatalogUpdate();
   const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -139,6 +141,14 @@ function Shell() {
                 <button className="btn small" onClick={() => sw.dismiss()}>
                   {t('app.later')}
                 </button>
+              </div>
+            )}
+            {catalogUpdate && top !== 'instruments' && (
+              <div className="banner update" role="status">
+                <span>{t('cat.banner', { name: `${catalogUpdate.broker} ${catalogUpdate.accountType}`.trim() })}</span>
+                <a className="btn small primary" href={href('instruments/catalog')}>
+                  {t('cat.review')}
+                </a>
               </div>
             )}
             {screen}

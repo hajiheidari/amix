@@ -40,6 +40,7 @@ jobs:
           git fetch origin catalog-data:catalog-data 2>/dev/null && git worktree add catalog-data catalog-data || {
             git worktree add --detach catalog-data && cd catalog-data && git checkout --orphan catalog-data && git rm -rf . >/dev/null 2>&1 || true; }
       - name: Export symbol specifications
+        timeout-minutes: 30
         env:
           MT_ACCOUNTS: ${{ secrets.MT_ACCOUNTS }}
           CATALOG_DIR: catalog-data/catalog

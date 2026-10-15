@@ -41,6 +41,10 @@ export interface MtSymbol {
   marginRate: number;
   /** false when trading is disabled for the symbol. */
   tradeAllowed: boolean;
+  /** Optional (catalog exporter): margin for 1 lot in account currency, measured by the terminal (order_calc_margin). */
+  marginPerLotAccount?: number | null;
+  /** Optional (catalog exporter): notional of 1 lot in account currency at the same price. */
+  notionalPerLotAccount?: number | null;
 }
 
 export interface MtExport {
@@ -115,6 +119,8 @@ export function parseMtExport(text: string, byteLength = text.length): MtParse {
       marginInitial: num(s.marginInitial) ?? 0,
       marginRate: num(s.marginRate) ?? 1,
       tradeAllowed: s.tradeAllowed !== false,
+      marginPerLotAccount: num(s.marginPerLotAccount),
+      notionalPerLotAccount: num(s.notionalPerLotAccount),
     });
   }
   return { ok: true, value: { format: MT_FORMAT, version: r.version, platform: r.platform === 'MT4' ? 'MT4' : 'MT5', exportedAt: str(r.exportedAt), account, symbols } };
@@ -153,6 +159,13 @@ export function classify(s: MtSymbol): AssetClass {
  *   others           → unsupported
  */
 export function mapMargin(s: MtSymbol, a: MtAccount, warnings: MtWarning[]): MarginModel {
+  // Preferred: margin measured by the terminal itself for 1 lot (catalog exports).
+  const m = s.marginPerLotAccount ?? 0;
+  const n = s.notionalPerLotAccount ?? 0;
+  if (m > 0 && a.currency && isCurrencyCode(a.currency)) {
+    if (TICK_MODES.has(s.calcMode) && s.calcMode !== 'SYMBOL_CALC_MODE_CFDINDEX') return { kind: 'fixed_per_quantity', amount: mtDec(m), currency: a.currency };
+    if (n > 0) return { kind: 'leverage', leverage: mtDec(Number((n / m).toPrecision(4))) };
+  }
   const rate = s.marginRate;
   const rateKnown = rate > 0;
   if (!rateKnown && !s.calcMode.includes('FUTURES')) {

@@ -10,21 +10,8 @@ import { useAppUi } from '../components/AppContext';
 /** Import broker contract specs exported by the AmixExport MQL4/MQL5 script. */
 export function ImportMt() {
   const i = useI18n();
-  const ui = useAppUi();
-  const { data, commit } = useStore();
   const [exp, setExp] = useState<MtExport | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [filter, setFilter] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  const mapped = useMemo(() => (exp ? mapExport(exp, data.profiles) : []), [exp, data.profiles]);
-  const visible = mapped.filter((m) => !filter || m.symbol.toUpperCase().includes(filter.trim().toUpperCase()) || m.description.toUpperCase().includes(filter.trim().toUpperCase()));
-  const counts = {
-    ok: mapped.filter((m) => m.profile && m.warnings.length === 0).length,
-    warn: mapped.filter((m) => m.profile && m.warnings.length > 0).length,
-    bad: mapped.filter((m) => !m.profile).length,
-  };
 
   const onFile = async (f: File | undefined) => {
     setExp(null);
@@ -34,36 +21,11 @@ export function ImportMt() {
     const r = parseMtExport(text, bytes);
     if (!r.ok) return setError(i.t(r.code, { detail: r.detail ?? '' }));
     setExp(r.value);
-    // Preselect importable, tradeable symbols.
-    setSelected(new Set(mapExport(r.value, data.profiles).filter((m) => m.profile && !m.warnings.includes('mt.warn.tradeDisabled')).map((m) => m.symbol)));
-  };
-
-  const doImport = async () => {
-    const chosen = mapped.filter((m) => m.profile && selected.has(m.symbol));
-    if (!chosen.length) return;
-    setBusy(true);
-    try {
-      // One transaction; existing profiles (same symbol + broker) get the next version.
-      await commit(chosen.map((m) => put('profiles', { ...m.profile!, version: m.profile!.version + 1 })));
-      ui.toast({ text: i.t('mt.done', { n: i.n(String(chosen.length)) }), kind: 'ok' });
-      go('instruments');
-    } catch (e) {
-      ui.toast({ text: i.t('error.generic', { detail: e instanceof Error ? e.message : String(e) }), kind: 'error' });
-    } finally {
-      setBusy(false);
-    }
   };
 
   const download = async (file: string) => {
     const text = await (await fetch(`./tools/${file}`)).text();
     await saveTextFile(file, 'text/plain', text);
-  };
-
-  const toggle = (sym: string, on: boolean) => {
-    const next = new Set(selected);
-    if (on) next.add(sym);
-    else next.delete(sym);
-    setSelected(next);
   };
 
   return (
@@ -92,7 +54,52 @@ export function ImportMt() {
           {(p) => <input {...p} className="input" type="file" accept=".json,application/json" onChange={(e) => void onFile(e.target.files?.[0])} data-testid="mt-file" />}
         </Field>
       </Card>
-      {exp && (
+      {exp && <MtPreview exp={exp} onDone={() => go('instruments')} />}
+    </div>
+  );
+}
+
+/** Preview + transactional import of an amix-mt-symbols export (file or broker catalog). */
+export function MtPreview({ exp, onDone, onImported }: { exp: MtExport; onDone: () => void; onImported?: () => Promise<void> }) {
+  const i = useI18n();
+  const ui = useAppUi();
+  const { data, commit } = useStore();
+  const mapped = useMemo(() => mapExport(exp, data.profiles), [exp, data.profiles]);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set(mapped.filter((m) => m.profile && !m.warnings.includes('mt.warn.tradeDisabled')).map((m) => m.symbol)));
+  const [filter, setFilter] = useState('');
+  const [busy, setBusy] = useState(false);
+  const visible = mapped.filter((m) => !filter || m.symbol.toUpperCase().includes(filter.trim().toUpperCase()) || m.description.toUpperCase().includes(filter.trim().toUpperCase()));
+  const counts = {
+    ok: mapped.filter((m) => m.profile && m.warnings.length === 0).length,
+    warn: mapped.filter((m) => m.profile && m.warnings.length > 0).length,
+    bad: mapped.filter((m) => !m.profile).length,
+  };
+  const doImport = async () => {
+    const chosen = mapped.filter((m) => m.profile && selected.has(m.symbol));
+    if (!chosen.length) return;
+    setBusy(true);
+    try {
+      // One transaction; existing profiles (same symbol + broker) get the next version.
+      await commit(chosen.map((m) => put('profiles', { ...m.profile!, version: m.profile!.version + 1 })));
+      ui.toast({ text: i.t('mt.done', { n: i.n(String(chosen.length)) }), kind: 'ok' });
+      await onImported?.();
+      onDone();
+    } catch (e) {
+      ui.toast({ text: i.t('error.generic', { detail: e instanceof Error ? e.message : String(e) }), kind: 'error' });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const toggle = (sym: string, on: boolean) => {
+    const next = new Set(selected);
+    if (on) next.add(sym);
+    else next.delete(sym);
+    setSelected(next);
+  };
+
+  return (
+    <>
         <Card title={i.t('imp.preview')}>
           <p className="small wrap-anywhere">
             {i.t('mt.source', { platform: exp.platform, broker: [exp.account.company, exp.account.server].filter(Boolean).join(' · '), date: exp.exportedAt ? i.dateTime(exp.exportedAt, { dateStyle: 'medium' }) : '—', currency: exp.account.currency, leverage: exp.account.leverage || '?' })}
@@ -144,7 +151,6 @@ export function ImportMt() {
             </a>
           </div>
         </Card>
-      )}
-    </div>
+    </>
   );
 }

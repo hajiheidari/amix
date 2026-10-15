@@ -9,6 +9,7 @@ import { useAppUi } from '../components/AppContext';
 import { Icon } from '../components/icons';
 import { sortedProfiles } from '../components/forms';
 import { ImportMt } from './ImportMt';
+import { BrokerCatalog } from './BrokerCatalog';
 
 function blank(): InstrumentProfile {
   const t = nowIso();
@@ -23,6 +24,7 @@ export function Instruments({ editId }: { editId?: string }) {
   const i = useI18n();
   const { data, settings, updateSettings } = useStore();
   if (editId === 'import-mt') return <ImportMt />;
+  if (editId === 'catalog') return <BrokerCatalog />;
   if (editId) return <ProfileEditor id={editId} />;
   const list = sortedProfiles(data.profiles, settings.favoriteProfileIds);
   const toggleFav = (id: string) => updateSettings({ favoriteProfileIds: settings.favoriteProfileIds.includes(id) ? settings.favoriteProfileIds.filter((x) => x !== id) : [...settings.favoriteProfileIds, id] });
@@ -31,7 +33,10 @@ export function Instruments({ editId }: { editId?: string }) {
       <div className="page-head">
         <h1>{i.t('inst.title')}</h1>
         <div className="row wrap">
-          <a className="btn primary" href={href('instruments/import-mt')}>
+          <a className="btn primary" href={href('instruments/catalog')}>
+            {i.t('inst.catalog')}
+          </a>
+          <a className="btn" href={href('instruments/import-mt')}>
             {i.t('inst.importMt')}
           </a>
           <a className="btn" href={href('instruments/new')}>
