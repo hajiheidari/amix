@@ -29,6 +29,9 @@ The script is **read-only**: it does not trade, change settings or access the ne
 
 Asset class is inferred from the calculation mode, base currency (XAU/XAG/XPT/XPD → metal) and symbol path (indices). Unclassified symbols become "Other CFD (linear)".
 
+## Weekly catalog (no MetaTrader needed for users)
+See `broker-catalog-fa.md`: a GitHub workflow exports the specs from broker demo servers every week, and users just pick their broker in the app. The file import above stays as an advanced option for other brokers or live-account specs.
+
 ## Limitations
 - Tiered or dynamic margin, swaps, commissions and spreads are not exported.
 - Tick values for tick-based modes are a snapshot at export time; re-export periodically.

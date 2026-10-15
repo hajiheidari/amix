@@ -56,6 +56,13 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
 - TradingView rejected as a source (no licensed API; chart metadata ≠ broker specs).
 - Builds with this feature (commit 8771334): iOS run 38778228409 **uploaded 0.1.0 build 8** to App Store Connect (`Upload succeeded`); Android run 38778232482 PASS (artifact `amix-android`).
 
+## Weekly broker catalog (2026-10-15)
+- `tools/mt-catalog/export.py` + `.github/workflows/broker-catalog.yml` (Mondays 03:17 UTC + manual): Windows runner installs MT5, logs into DEMO accounts from secret `MT_ACCOUNTS` (investor passwords recommended), exports all tradeable symbols, including terminal-measured margin per lot, and publishes `catalog/*.json` + `catalog/index.json` to the `catalog-data` branch. Each account runs in a child process with a hard timeout, and credentials are never logged.
+- App: Instruments → **Choose my broker** (reads `raw.githubusercontent.com/.../catalog-data/catalog/`), import with preview, weekly update check with a banner (never silent), stale (>14 days) warning, offline error with retry.
+- Feasibility run 38783004259: **PASS**. MT5 installs on `windows-latest` and the terminal starts (`PROBE OK`, MetaTrader5 Python 5.0.6231). The first probe attempt (run 38781866837) hung in `initialize()` without credentials and was cancelled; fixed with process isolation and timeouts.
+- **BLOCKED:** the real login/export has not run yet. It waits for the owner to create demo accounts (Exness, LiteFinance, Alpari, OpoFinance) and add `MT_ACCOUNTS` (guide: `broker-catalog-fa.md`).
+- Tests: `pnpm test` 98 passed; `pnpm test:e2e` 16/16 passed (new: catalog choose → import → update notice; offline retry).
+
 ## Next concrete steps
 1. Owner: install `app-debug.apk` on an Android phone and run the core workflow in fa/ar; report any issues.
 2. Owner: create the release keystore → `pnpm android:release` → publish the APK + SHA-256 for direct download.
