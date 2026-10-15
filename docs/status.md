@@ -46,6 +46,7 @@ M0–M5 are implemented and tested. For M6, the PWA is done, the Android debug A
   - Run 38659613547: secrets visible; `.p8` text rejected as invalid PEM. Fixed in the workflow (normalizes CRLF/BOM/spaces/base64 and validates with openssl).
   - Run 38660115708: Apple API authentication OK; archive failed because automatic signing wanted a development profile (no registered devices). Fixed: unsigned archive, App Store signing at export.
   - Run 38660604132: **`** ARCHIVE SUCCEEDED **`**; export/upload failed with `exportArchive Error Downloading App Information`. Most likely cause: no app record for `com.espadna.amix` in App Store Connect yet (or the API key lacks the Admin role). Waiting on the owner.
+  - Owner registered the bundle id and created the App Store Connect app. Run 38661553178: **PASS**. `ARCHIVE SUCCEEDED`, `EXPORT SUCCEEDED`, "Upload succeeded": **version 0.1.0 build 7 uploaded to App Store Connect** (TestFlight processing then happens on Apple's side). Device testing via TestFlight is pending the owner.
   - Note: the repository is now public, so the source is visible to anyone. No secrets are committed (scanned). There is no LICENSE file, so the default is "all rights reserved"; this is the owner's decision.
 
 ## Next concrete steps
